@@ -1,6 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+#define bool int
+#define true 1
+#define false 0
+
+enum sortType {
+    asc, desc
+};
+
 typedef struct node {
     int val;
     struct node *next;
@@ -164,16 +172,53 @@ int deleteAfterEle(NODE* sll, int key) {
 }
 
 NODE* reverseSLL(NODE* sll) {
-    if (sll == NULL || sll->next == NULL) {
+    if(sll == NULL || sll->next == NULL)
         return sll;
-    }
-    NODE* rest = reverseSLL(sll->next);
-    sll->next->next = sll;
+    NODE *rest = reverseSLL(sll->next);
+    sll->next->next=sll;
     sll->next = NULL;
     return rest;
 }
 
+NODE* appendSLL(NODE *sll1, NODE *sll2) {
+    while(sll1->next!=NULL) sll1=sll1->next;
+    sll1->next = sll2;
+    return sll1;
+}
 
+int findMid(NODE *sll) {
+    if(sll->next == NULL) return sll->val;
+    NODE *curr=sll, *jumper=sll;
+    while(jumper->next!=NULL || jumper != NULL) {
+        jumper = jumper->next->next;
+        if(jumper) curr = curr->next;
+    }
+    return curr->val;
+}
+
+int findMax(NODE *sll) {
+    int max=sll->val;
+    while(sll->next!=NULL) {
+        sll = sll->next;
+        if(sll->val>max)max=sll->val;
+    }
+    return max;
+}
+
+int findMin(NODE *sll) {
+    int min=sll->val;
+    while(sll->next != NULL) {
+        sll = sll->next;
+        if(sll->val<min) min = sll->val;
+    }
+    return min;
+}
+
+NODE *sortSLL(NODE *sll, enum sortType order) {
+    if(order == asc) {
+        
+    }
+}
 
 void main() {
     NODE* sll1 = NULL, *sll2 = NULL;
@@ -440,18 +485,60 @@ void main() {
             break;
         case 7:
             // reverse
+            printf("\nSelect SLL to reverse:\n\n1\tSLL1\n2\tSLL2\n");
+            int sllchoice;
+            scanf("%d", &sllchoice);
+            switch (sllchoice)
+            {
+            case 1:
+                reverseSLL(sll1);
+                break;
+            case 2:
+                reverseSLL(sll2);
+                break;
+            default:
+                break;
+            }
+            pritnf("Reversed...");
             break;
         case 8:
             // append 2 sll
+            printf("Select append behaviour:\n\n1\tSLL1->SLL2\n2\tSLL2->SLL1\n");
+            int appendchoice;
+            scanf("%d", &appendchoice);
+            printf("Select where to store final SLL:\n\n1\tSLL1\n2\tSLL2\n");
+            int sllchoice;
+            scanf("%d", &sllchoice);
+            switch (appendchoice)
+            {
+            case 1:
+                (sllchoice==1)?(sll1=appendSLL(sll1, sll2)):(sll2=appendSLL(sll1, sll2));
+                break;
+            default:
+                (sllchoice==1)?(sll1=appendSLL(sll2, sll1)):(sll2=appendSLL(sll2, sll1));
+                break;
+            }
             break;
         case 9:
             // find mid without counting
+            printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
+            int sllchoice;
+            scanf("%d", &sllchoice);
+            printf("\nMID: %d", findMid((sllchoice==1)?sll1:sll2));
             break;
         case 10:
             // find max
+            printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
+            int sllchoice;
+            scanf("%d", &sllchoice);
+            printf("\nMAX: %d\n", findMax((sllchoice==1)?sll1:sll2));
             break;
         case 11:
             // find min
+            printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
+            int sllchoice;
+            scanf("%d", &sllchoice);
+            printf("\nMIN: %d\n", findMin((sllchoice==1)?sll1:sll2));
             break;
         case 12:
             // sort
