@@ -1,13 +1,10 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdbool.h>
 
-#define bool int
-#define true 1
-#define false 0
-
-enum sortType {
+typedef enum sorttype {
     asc, desc
-};
+} sortType;
 
 typedef struct node {
     int val;
@@ -21,6 +18,7 @@ NODE* createSLL() {
     if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return NULL; }
     printf("Enter value: ");
     scanf("%d", &new->val);
+    getchar();
     char choice;
     printf("Add new node? (y/N) ");
     scanf("%c", &choice);
@@ -70,7 +68,7 @@ NODE* insertAtBeginning(NODE* sll, int ele) {
 void insertAtEnd(NODE* sll, int ele) {
     NODE *new = (NODE*)malloc(sizeof(NODE));
     if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return; }
-    new->val;
+    new->val=ele;
     new->next=NULL;
     while(sll->next != NULL) sll = sll->next;
     sll->next = new;
@@ -87,7 +85,7 @@ NODE* insertAtPos(NODE* sll, int pos, int ele) {
         if(pos!=2) { printf("\nPosition out of bounds\n"); }
         else {
             NODE* new = (NODE*)malloc(sizeof(NODE));
-            if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return; }
+            if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return sll; }
             new->val = ele;
             new->next = sll->next?sll->next->next:NULL;
             sll->next = new;
@@ -122,14 +120,14 @@ int deleteAtBeginning(NODE** sll) {
 
 int deleteAtEnd(NODE** sll) {
     NODE* prev = NULL, *temp = NULL, *curr = *sll; int val;
-    if((*sll)->next = NULL) {
+    if(((*sll)->next) = NULL) {
         temp = *sll;
         val = temp->val;
         *sll = NULL;
         free(temp);
         return val;
     }
-    while(curr->next = NULL) {
+    while((curr->next) = NULL) {
         prev = curr;
         curr = curr->next;
     }
@@ -214,10 +212,47 @@ int findMin(NODE *sll) {
     return min;
 }
 
-NODE *sortSLL(NODE *sll, enum sortType order) {
-    if(order == asc) {
-        
+int getLength(NODE *sll) {
+    int length=0;
+    while(sll!=NULL) {
+        length++;
+        sll=sll->next;
     }
+    return length;
+}
+
+void swapNodes(NODE **n1, NODE **n2) {
+    int temp = (*n1)->val;
+    (*n1)->val = (*n2)->val;
+    (*n2)->val = temp;
+}
+
+NODE *sortSLL(NODE *sll, sortType order) {
+    int n = getLength(sll);
+    bool swapped;
+    for(int i=0; i<n-1; i++) {
+        swapped=false;
+        for(int j=0; j<n-i-1; j++) {
+            switch (order)
+            {
+            case asc:
+                if(sll->val > sll->next->val) {
+                    swapNodes(&sll, &(sll->next));
+                    swapped = true;
+                }
+                break;
+            case desc:
+                if(sll->val < sll->next->val) {
+                    swapNodes(&sll, &(sll->next));
+                    swapped = true;
+                }
+            default:
+                break;
+            }
+        }
+        if(!swapped) break;
+    }
+    return sll;
 }
 
 void main() {
@@ -240,11 +275,11 @@ void main() {
         printf("\n\n0\tEXIT\n\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
+        int sllchoice, ele, opchoice;
         switch (choice)
         {
         case 1:
             if(sll1 == NULL && sll2 == NULL) {
-                int sllchoice;
                 printf("\nSelect SLL to create:\n\n1\tSLL1\n2\tSLL2\n");
                 scanf("%d", &sllchoice);
                 switch (sllchoice)
@@ -266,7 +301,6 @@ void main() {
             else printf("Delete an SLL to create another one...");
             break;
         case 2:
-            int sllchoice;
             printf("\nSelect SLL to delete:\n\n1\tSLL1\n2\tSLL2\n");
             scanf("%d", &sllchoice);
             switch (sllchoice)
@@ -293,7 +327,6 @@ void main() {
             break;
         case 3:
             printf("\nSelect SLL to traverse:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
             scanf("%d", &sllchoice);
             switch (sllchoice)
             {
@@ -311,7 +344,6 @@ void main() {
             break;
         case 4:
             printf("\nSelect SLL to count nodes:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
             scanf("%d", &sllchoice);
             switch (sllchoice)
             {
@@ -326,13 +358,10 @@ void main() {
             }
         case 5:
             printf("\nSelect SLL to insert node:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
             scanf("%d", &sllchoice);
             printf("\nInsert at...\n\n\t1\t beginning\n\t2\tend\n\t3\ti-th position\n\t4\tafter element\n");
-            int opchoice;
-            scanf("%d", opchoice);
+            scanf("%d", &opchoice);
             printf("\nEnter element: ");
-            int ele;
             scanf("%d", &ele);
             switch (opchoice)
             {
@@ -407,13 +436,10 @@ void main() {
             }
             break;
         case 6:
-            printf("\nSelect SLL to insert node:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
+            printf("\nSelect SLL to delete node:\n\n1\tSLL1\n2\tSLL2\n");
             scanf("%d", &sllchoice);
-            printf("\Delete at...\n\n\t1\t beginning\n\t2\tend\n\t3\ti-th position\n\t4\tafter element\n");
-            int opchoice;
-            scanf("%d", opchoice);
-            int ele;
+            printf("\nDelete at...\n\n\t1\t beginning\n\t2\tend\n\t3\ti-th position\n\t4\tafter element\n");
+            scanf("%d", &opchoice);
             switch (opchoice)
             {
             case 1:
@@ -486,7 +512,6 @@ void main() {
         case 7:
             // reverse
             printf("\nSelect SLL to reverse:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
             scanf("%d", &sllchoice);
             switch (sllchoice)
             {
@@ -499,7 +524,7 @@ void main() {
             default:
                 break;
             }
-            pritnf("Reversed...");
+            printf("Reversed...");
             break;
         case 8:
             // append 2 sll
@@ -522,26 +547,43 @@ void main() {
         case 9:
             // find mid without counting
             printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
             scanf("%d", &sllchoice);
             printf("\nMID: %d", findMid((sllchoice==1)?sll1:sll2));
             break;
         case 10:
             // find max
             printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
             scanf("%d", &sllchoice);
             printf("\nMAX: %d\n", findMax((sllchoice==1)?sll1:sll2));
             break;
         case 11:
             // find min
             printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
             scanf("%d", &sllchoice);
             printf("\nMIN: %d\n", findMin((sllchoice==1)?sll1:sll2));
             break;
         case 12:
             // sort
+            printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
+            scanf("%d", &sllchoice);
+            printf("Enter order:\n\n0\tASCENDING\n1\tDESCENDING\n");
+            sortType order;
+            int orderChoice;
+            scanf("%d", &orderChoice);
+            if(orderChoice) order = desc;
+            else order = asc;
+            switch (sllchoice)
+            {
+            case 1:
+                sll1 = sortSLL(sll1, order);
+                break;
+            case 2:
+                sll2 = sortSLL(sll2, order);
+                break;
+            default:
+                break;
+            }
+            printf("\nSorted...\n");
             break;
         default:
             break;
