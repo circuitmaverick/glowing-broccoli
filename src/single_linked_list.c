@@ -80,7 +80,6 @@ void insertAtEnd(NODE* sll, int ele) {
 }
 
 NODE* insertAtPos(NODE* sll, int pos, int ele) {
-    NODE* start = sll;
     if(pos == 1) { return insertAtBeginning(sll, ele); }
     else {
         while(sll->next != NULL && pos>2) {
@@ -95,8 +94,8 @@ NODE* insertAtPos(NODE* sll, int pos, int ele) {
             new->next = sll->next?sll->next->next:NULL;
             sll->next = new;
         }
+        return sll;
     }
-    return start;
 }
 
 void insertAfterEle(NODE* sll, int key, int ele) {
@@ -104,13 +103,12 @@ void insertAfterEle(NODE* sll, int key, int ele) {
     if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return; }
     new->val = ele;
     int flag = 0;
-    while(sll->next!=NULL && !flag) {
+    while(sll && !flag) {
         if(sll->val == key) { flag = 1; break; }
         sll = sll->next;
-        if(sll->val == key) { flag = 1; break; }
     }
     if(flag) {
-        new->next = sll->next->next;
+        new->next = sll->next;
         sll->next = new;
     } else printf("\nGiven element not found...\n");
 }
@@ -127,7 +125,7 @@ int deleteAtEnd(NODE** sll) {
     NODE* prev = NULL, *temp = NULL, *curr = *sll; int val;
     if(((*sll)->next) = NULL) {
         temp = *sll;
-        val = temp->val;
+        val = (*sll)->val;
         *sll = NULL;
         free(temp);
         return val;
@@ -411,10 +409,10 @@ void main() {
                 switch (sllchoice)
                 {
                 case 1:
-                    insertAtPos(sll1, i, ele);
+                    sll1 = insertAtPos(sll1, i, ele);
                     break;
                 case 2:
-                    insertAtPos(sll2, i, ele);
+                    sll2 = insertAtPos(sll2, i, ele);
                     break;
                 default:
                     break;
