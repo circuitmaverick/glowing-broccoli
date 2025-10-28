@@ -35,15 +35,20 @@ NODE* createSLL() {
 }
 
 // recursive function to delete sll
-void deleteSLL(NODE* sll) {
-    NODE *temp = sll->next;
+NODE* deleteSLL(NODE* sll) {
+    NODE *temp;
+    while(sll->next) {
+        temp = sll;
+        sll = sll->next;
+        free(temp);
+    }
     free(sll);
-    if(temp != NULL) deleteSLL(temp);
-    else return;
+    return NULL;
 }
 
 // recursive function to traverse sll
 void traverseSLL(NODE* sll) {
+    if(sll == NULL) { printf("\nSLL doesn't exist\n"); return; }
     printf("%d", sll->val);
     if(sll->next) { printf(" -> "); traverseSLL(sll->next); }
     else return;
@@ -309,7 +314,7 @@ void main() {
                 if (sll1 == NULL) printf("\nEmpty SLL\n");
                 else {
                     printf("\nDeleting SLL1...\n");
-                    deleteSLL(sll1);
+                    sll1=deleteSLL(sll1);
                     printf("\nDeleted SLL1\n");
                 }
                 break;
@@ -317,7 +322,7 @@ void main() {
                 if (sll2 == NULL) printf("\nEmpty SLL\n");
                 else {
                     printf("\nDeleting SLL2...\n");
-                    deleteSLL(sll2);
+                    sll2=deleteSLL(sll2);
                     printf("\nDeleted SLL2\n");
                 }
                 break;
@@ -332,11 +337,11 @@ void main() {
             {
             case 1:
                 printf("\nTraversing SLL1...\n");
-                traverseSLL(sll1);
+                traverseSLL(sll1?sll1:NULL);
                 break;
             case 2:
                 printf("\nTraversing SLL2...\n");
-                traverseSLL(sll2);
+                traverseSLL(sll2?sll2:NULL);
                 break;
             default:
                 break;
@@ -585,7 +590,7 @@ void main() {
             }
             printf("\nSorted...\n");
             break;
-        default:
+        default: return;
             break;
         }
     }
