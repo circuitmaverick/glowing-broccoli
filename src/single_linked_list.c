@@ -81,7 +81,7 @@ void insertAtEnd(NODE* sll, int ele) {
 
 NODE* insertAtPos(NODE* sll, int pos, int ele) {
     NODE* start = sll;
-    if(pos == 1) start = insertAtBeginning(sll, ele);
+    if(pos == 1) { return insertAtBeginning(sll, ele); }
     else {
         while(sll->next != NULL && pos>2) {
             sll = sll->next;
@@ -361,6 +361,7 @@ void main() {
             default:
                 break;
             }
+            break;
         case 5:
             printf("\nSelect SLL to insert node:\n\n1\tSLL1\n2\tSLL2\n");
             scanf("%d", &sllchoice);
