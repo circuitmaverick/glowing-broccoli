@@ -34,7 +34,7 @@ NODE* createSLL() {
     return new;
 }
 
-// recursive function to delete sll
+// delete sll
 NODE* deleteSLL(NODE* sll) {
     NODE *temp;
     while(sll->next) {
