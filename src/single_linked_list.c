@@ -1,43 +1,54 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-typedef enum sorttype {
-    asc, desc
+typedef enum sorttype
+{
+    asc,
+    desc
 } sortType;
 
-typedef struct node {
+typedef struct node
+{
     int val;
     struct node *next;
 } NODE;
 
 // recursive function to create sll
 // dynamically according to number of nodes as per user
-NODE* createSLL() {
-    NODE* new = (NODE*)malloc(sizeof(NODE));
-    if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return NULL; }
+NODE *createSLL()
+{
+    NODE *new = (NODE *)malloc(sizeof(NODE));
+    if (new == NULL)
+    {
+        printf("\nMEMORY ALLOCATION FAILED\n");
+        return NULL;
+    }
     printf("Enter value: ");
     scanf("%d", &new->val);
     getchar();
     char choice;
     printf("Add new node? (y/N) ");
     scanf("%c", &choice);
-    switch (choice) {
-        case 'y':
-        case 'Y':
-            new->next = createSLL();
-            break;
-        default:
-            new->next = NULL;
-            break;
+    switch (choice)
+    {
+    case 'y':
+    case 'Y':
+        new->next = createSLL();
+        break;
+    default:
+        new->next = NULL;
+        break;
     }
     return new;
 }
 
 // delete sll
-NODE* deleteSLL(NODE* sll) {
+NODE *deleteSLL(NODE *sll)
+{
     NODE *temp;
-    while(sll->next) {
+    while (sll->next)
+    {
         temp = sll;
         sll = sll->next;
         free(temp);
@@ -47,205 +58,320 @@ NODE* deleteSLL(NODE* sll) {
 }
 
 // recursive function to traverse sll
-void traverseSLL(NODE* sll) {
-    if(sll == NULL) { printf("\nSLL doesn't exist\n"); return; }
+void traverseSLL(NODE *sll)
+{
+    if (sll == NULL)
+    {
+        printf("\nSLL doesn't exist\n");
+        return;
+    }
     printf("%d", sll->val);
-    if(sll->next) { printf(" -> "); traverseSLL(sll->next); }
-    else return;
+    if (sll->next)
+    {
+        printf(" -> ");
+        traverseSLL(sll->next);
+    }
+    else
+        return;
 }
 
 // recursive function to count nodes
-int countNodes(NODE* sll) {
-    if(sll) return 1 + countNodes(sll->next);
-    else return 0;
+int countNodes(NODE *sll)
+{
+    if (sll)
+        return 1 + countNodes(sll->next);
+    else
+        return 0;
 }
 
 // function to insert node at beginning
-NODE* insertAtBeginning(NODE* sll, int ele) {
-    NODE* new = (NODE*)malloc(sizeof(NODE));
-    if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return sll; }
+NODE *insertAtBeginning(NODE *sll, int ele)
+{
+    NODE *new = (NODE *)malloc(sizeof(NODE));
+    if (new == NULL)
+    {
+        printf("\nMEMORY ALLOCATION FAILED\n");
+        return sll;
+    }
     new->val = ele;
     new->next = sll;
     return new;
 }
 
 // function to insert node at end
-void insertAtEnd(NODE* sll, int ele) {
-    NODE *new = (NODE*)malloc(sizeof(NODE));
-    if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return; }
-    new->val=ele;
-    new->next=NULL;
-    while(sll->next != NULL) sll = sll->next;
+void insertAtEnd(NODE *sll, int ele)
+{
+    NODE *new = (NODE *)malloc(sizeof(NODE));
+    if (new == NULL)
+    {
+        printf("\nMEMORY ALLOCATION FAILED\n");
+        return;
+    }
+    new->val = ele;
+    new->next = NULL;
+    while (sll->next != NULL)
+        sll = sll->next;
     sll->next = new;
 }
 
-NODE* insertAtPos(NODE* sll, int pos, int ele) {
-    if(pos == 1) { return insertAtBeginning(sll, ele); }
-    else {
-        while(sll->next != NULL && pos>2) {
-            sll = sll->next;
+NODE *insertAtPos(NODE *sll, int pos, int ele)
+{
+    if (pos == 1)
+    {
+        return insertAtBeginning(sll, ele);
+    }
+    else
+    {
+        NODE *curr = sll;
+        while (curr->next != NULL && pos > 2)
+        {
+            curr = curr->next;
             pos--;
         }
-        if(pos!=2) { printf("\nPosition out of bounds\n"); }
-        else {
-            NODE* new = (NODE*)malloc(sizeof(NODE));
-            if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return sll; }
+        if (pos != 2)
+        {
+            printf("\nPosition out of bounds\n");
+        }
+        else
+        {
+            NODE *new = (NODE *)malloc(sizeof(NODE));
+            if (new == NULL)
+            {
+                printf("\nMEMORY ALLOCATION FAILED\n");
+                return curr;
+            }
             new->val = ele;
-            new->next = sll->next?sll->next->next:NULL;
-            sll->next = new;
+            new->next = curr->next ? curr->next->next : NULL;
+            curr->next = new;
         }
         return sll;
     }
 }
 
-void insertAfterEle(NODE* sll, int key, int ele) {
-    NODE *new = (NODE*)malloc(sizeof(NODE));
-    if(new == NULL) { printf("\nMEMORY ALLOCATION FAILED\n"); return; }
+void insertAfterEle(NODE *sll, int key, int ele)
+{
+    NODE *new = (NODE *)malloc(sizeof(NODE));
+    if (new == NULL)
+    {
+        printf("\nMEMORY ALLOCATION FAILED\n");
+        return;
+    }
     new->val = ele;
     int flag = 0;
-    while(sll && !flag) {
-        if(sll->val == key) { flag = 1; break; }
+    while (sll && !flag)
+    {
+        if (sll->val == key)
+        {
+            flag = 1;
+            break;
+        }
         sll = sll->next;
     }
-    if(flag) {
+    if (flag)
+    {
         new->next = sll->next;
         sll->next = new;
-    } else printf("\nGiven element not found...\n");
+    }
+    else
+        printf("\nGiven element not found...\n");
 }
 
-int deleteAtBeginning(NODE** sll) {
-    NODE* temp = *sll;
+int deleteAtBeginning(NODE **sll)
+{
+    NODE *temp = *sll;
     *sll = (*sll)->next;
     int val = temp->val;
     free(temp);
     return val;
 }
 
-int deleteAtEnd(NODE** sll) {
-    NODE* prev = NULL, *temp = NULL, *curr = *sll; int val;
-    if(((*sll)->next) = NULL) {
-        temp = *sll;
-        val = (*sll)->val;
+int deleteAtEnd(NODE **sll)
+{
+    NODE *prev, *curr = *sll; int val;
+    // linked list is empty
+    if(!curr) {
+        printf("\nEmpty Linked List\n");
+        return 0;
+    }
+    // only one node is present
+    if(!curr->next) {
+        val = curr->val;
+        free(curr);
         *sll = NULL;
-        free(temp);
         return val;
     }
-    while((curr->next) = NULL) {
+    // traverse the linked list and delete the last node
+    while(curr->next) {
         prev = curr;
         curr = curr->next;
     }
+    // last node is stored in curr and the previous node in prev
     prev->next = NULL;
-    temp = curr;
     val = curr->val;
-    free(temp);
+    free(curr);
     return val;
 }
 
-int deleteAtPos(NODE** sll, int pos) {
-    NODE *curr = *sll, *temp; int val;
-    if(pos == 1) return deleteAtBeginning(sll);
-    while(curr->next != NULL && pos>=2) {
+int deleteAtPos(NODE **sll, int pos)
+{
+    NODE *curr = *sll, *prev;
+    // linked list is empty
+    if(!curr) {
+        printf("\nSLL is empty\n");
+        return 0;
+    }
+    // first element
+    if(pos==1) return deleteAtBeginning(sll);
+    // traverse and find position
+    int i=1;
+    while(curr->next) {
+        if(i==pos) break;
+        prev = curr;
         curr = curr->next;
-        pos--;
+        i++;
     }
-    if(pos != 2) { printf("\nPosition out of bounds\n"); return 0; }
-    temp = curr->next;
-    curr->next = curr->next->next;
-    val = temp->val;
-    free(temp);
+    if(i!=pos) {
+        printf("\nPosition out of bounds\n");
+        return 0;
+    }
+    prev->next = curr->next;
+    int val = curr->val;
+    free(curr);
     return val;
 }
 
-int deleteAfterEle(NODE* sll, int key) {
-    int flag = 0, val = 0; NODE* prev = NULL;
-    while(sll->next != NULL) {
-        if(sll->val == key) { flag = 1; break; }
+int deleteAfterEle(NODE *sll, int key)
+{
+    int flag = 0, val = 0;
+    NODE *prev = NULL;
+    while (sll && !flag)
+    {
         prev = sll;
+        if(sll->val == key) flag = 1;
         sll = sll->next;
-        if(sll->val == key) { flag = 1; break; }
     }
-    if(flag) {
+    if (flag && sll)
+    {
         prev->next = sll->next;
         val = sll->val;
         free(sll);
-    } else printf("\nGiven element not found\n");
+    }
+    else
+        printf("\nGiven element not found\n");
     return val;
 }
 
-NODE* reverseSLL(NODE* sll) {
-    if(sll == NULL || sll->next == NULL)
-        return sll;
-    NODE *rest = reverseSLL(sll->next);
-    sll->next->next=sll;
-    sll->next = NULL;
-    return rest;
+NODE *reverseSLL(NODE *sll)
+{
+    // linked list is empty
+    if(!sll) {
+        printf("\nLinked list is empty\n");
+        return NULL;
+    }
+    // linked list has single node
+    if(!sll->next) return sll;
+    // reverse the list with more than one nodes
+    NODE *prev = NULL, *curr = sll, *next = NULL;
+    while(curr) {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
 }
 
-NODE* appendSLL(NODE *sll1, NODE *sll2) {
-    while(sll1->next!=NULL) sll1=sll1->next;
-    sll1->next = sll2;
-    return sll1;
+void appendSLL(NODE **sll1, NODE **sll2)
+{
+    // check if both sll exists
+    if(!*sll1 || !*sll2) {
+        printf("\nSLL doesn't exist\n");
+        return;
+    }
+    NODE *curr = *sll1;
+    while (curr->next)
+        curr = curr->next;
+    curr->next = *sll2;
+    *sll2 = NULL;
 }
 
-int findMid(NODE *sll) {
-    if(sll->next == NULL) return sll->val;
-    NODE *curr=sll, *jumper=sll;
-    while(jumper->next!=NULL || jumper != NULL) {
+int findMid(NODE *sll)
+{
+    if (sll->next == NULL)
+        return sll->val;
+    NODE *curr = sll, *jumper = sll;
+    while (jumper->next != NULL || jumper != NULL)
+    {
         jumper = jumper->next->next;
-        if(jumper) curr = curr->next;
+        if (jumper)
+            curr = curr->next;
     }
     return curr->val;
 }
 
-int findMax(NODE *sll) {
-    int max=sll->val;
-    while(sll->next!=NULL) {
+int findMax(NODE *sll)
+{
+    int max = sll->val;
+    while (sll->next != NULL)
+    {
         sll = sll->next;
-        if(sll->val>max)max=sll->val;
+        if (sll->val > max)
+            max = sll->val;
     }
     return max;
 }
 
-int findMin(NODE *sll) {
-    int min=sll->val;
-    while(sll->next != NULL) {
+int findMin(NODE *sll)
+{
+    int min = sll->val;
+    while (sll->next != NULL)
+    {
         sll = sll->next;
-        if(sll->val<min) min = sll->val;
+        if (sll->val < min)
+            min = sll->val;
     }
     return min;
 }
 
-int getLength(NODE *sll) {
-    int length=0;
-    while(sll!=NULL) {
+int getLength(NODE *sll)
+{
+    int length = 0;
+    while (sll != NULL)
+    {
         length++;
-        sll=sll->next;
+        sll = sll->next;
     }
     return length;
 }
 
-void swapNodes(NODE **n1, NODE **n2) {
+void swapNodes(NODE **n1, NODE **n2)
+{
     int temp = (*n1)->val;
     (*n1)->val = (*n2)->val;
     (*n2)->val = temp;
 }
 
-NODE *sortSLL(NODE *sll, sortType order) {
+NODE *sortSLL(NODE *sll, sortType order)
+{
     int n = getLength(sll);
     bool swapped;
-    for(int i=0; i<n-1; i++) {
-        swapped=false;
-        for(int j=0; j<n-i-1; j++) {
+    for (int i = 0; i < n - 1; i++)
+    {
+        swapped = false;
+        for (int j = 0; j < n - i - 1; j++)
+        {
             switch (order)
             {
             case asc:
-                if(sll->val > sll->next->val) {
+                if (sll->val > sll->next->val)
+                {
                     swapNodes(&sll, &(sll->next));
                     swapped = true;
                 }
                 break;
             case desc:
-                if(sll->val < sll->next->val) {
+                if (sll->val < sll->next->val)
+                {
                     swapNodes(&sll, &(sll->next));
                     swapped = true;
                 }
@@ -253,14 +379,17 @@ NODE *sortSLL(NODE *sll, sortType order) {
                 break;
             }
         }
-        if(!swapped) break;
+        if (!swapped)
+            break;
     }
     return sll;
 }
 
-void main() {
-    NODE* sll1 = NULL, *sll2 = NULL;
-    while(1) {
+void main()
+{
+    NODE *sll1 = NULL, *sll2 = NULL;
+    while (1)
+    {
         int choice;
         printf("\n-------MENU--------\n");
         printf("\n1\tCREATE SLL");
@@ -270,7 +399,8 @@ void main() {
         printf("\n5\tINSERT");
         printf("\n6\tDELETE");
         printf("\n7\tREVERSE");
-        printf("\n8\tAPPEND 2 SLL");;
+        printf("\n8\tAPPEND 2 SLL");
+        ;
         printf("\n9\tFIND MIDDLE WITHOUT COUNTING");
         printf("\n10\tFIND MAX");
         printf("\n11\tFIND MIN");
@@ -282,7 +412,8 @@ void main() {
         switch (choice)
         {
         case 1:
-            if(sll1 == NULL && sll2 == NULL) {
+            if (sll1 == NULL && sll2 == NULL)
+            {
                 printf("\nSelect SLL to create:\n\n1\tSLL1\n2\tSLL2\n");
                 scanf("%d", &sllchoice);
                 switch (sllchoice)
@@ -299,9 +430,18 @@ void main() {
                     break;
                 }
             }
-            else if(sll1 == NULL) { printf("Creating SLL1..."); sll1 = createSLL(); }
-            else if(sll2 == NULL) { printf("Creating SLL2..."); sll2 = createSLL(); }
-            else printf("Delete an SLL to create another one...");
+            else if (sll1 == NULL)
+            {
+                printf("Creating SLL1...");
+                sll1 = createSLL();
+            }
+            else if (sll2 == NULL)
+            {
+                printf("Creating SLL2...");
+                sll2 = createSLL();
+            }
+            else
+                printf("Delete an SLL to create another one...");
             break;
         case 2:
             printf("\nSelect SLL to delete:\n\n1\tSLL1\n2\tSLL2\n");
@@ -309,18 +449,22 @@ void main() {
             switch (sllchoice)
             {
             case 1:
-                if (sll1 == NULL) printf("\nEmpty SLL\n");
-                else {
+                if (sll1 == NULL)
+                    printf("\nEmpty SLL\n");
+                else
+                {
                     printf("\nDeleting SLL1...\n");
-                    sll1=deleteSLL(sll1);
+                    sll1 = deleteSLL(sll1);
                     printf("\nDeleted SLL1\n");
                 }
                 break;
             case 2:
-                if (sll2 == NULL) printf("\nEmpty SLL\n");
-                else {
+                if (sll2 == NULL)
+                    printf("\nEmpty SLL\n");
+                else
+                {
                     printf("\nDeleting SLL2...\n");
-                    sll2=deleteSLL(sll2);
+                    sll2 = deleteSLL(sll2);
                     printf("\nDeleted SLL2\n");
                 }
                 break;
@@ -335,11 +479,11 @@ void main() {
             {
             case 1:
                 printf("\nTraversing SLL1...\n");
-                traverseSLL(sll1?sll1:NULL);
+                traverseSLL(sll1 ? sll1 : NULL);
                 break;
             case 2:
                 printf("\nTraversing SLL2...\n");
-                traverseSLL(sll2?sll2:NULL);
+                traverseSLL(sll2 ? sll2 : NULL);
                 break;
             default:
                 break;
@@ -363,7 +507,7 @@ void main() {
         case 5:
             printf("\nSelect SLL to insert node:\n\n1\tSLL1\n2\tSLL2\n");
             scanf("%d", &sllchoice);
-            printf("\nInsert at...\n\n\t1\t beginning\n\t2\tend\n\t3\ti-th position\n\t4\tafter element\n");
+            printf("\nInsert at...\n\n\t1\tbeginning\n\t2\tend\n\t3\ti-th position\n\t4\tafter element\n");
             scanf("%d", &opchoice);
             printf("\nEnter element: ");
             scanf("%d", &ele);
@@ -520,10 +664,10 @@ void main() {
             switch (sllchoice)
             {
             case 1:
-                reverseSLL(sll1);
+                sll1 = reverseSLL(sll1);
                 break;
             case 2:
-                reverseSLL(sll2);
+                sll2 = reverseSLL(sll2);
                 break;
             default:
                 break;
@@ -535,16 +679,13 @@ void main() {
             printf("Select append behaviour:\n\n1\tSLL1->SLL2\n2\tSLL2->SLL1\n");
             int appendchoice;
             scanf("%d", &appendchoice);
-            printf("Select where to store final SLL:\n\n1\tSLL1\n2\tSLL2\n");
-            int sllchoice;
-            scanf("%d", &sllchoice);
             switch (appendchoice)
             {
             case 1:
-                (sllchoice==1)?(sll1=appendSLL(sll1, sll2)):(sll2=appendSLL(sll1, sll2));
+                appendSLL(&sll1, &sll2);
                 break;
             default:
-                (sllchoice==1)?(sll1=appendSLL(sll2, sll1)):(sll2=appendSLL(sll2, sll1));
+                appendSLL(&sll2, &sll1);
                 break;
             }
             break;
@@ -552,19 +693,19 @@ void main() {
             // find mid without counting
             printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
             scanf("%d", &sllchoice);
-            printf("\nMID: %d", findMid((sllchoice==1)?sll1:sll2));
+            printf("\nMID: %d", findMid((sllchoice == 1) ? sll1 : sll2));
             break;
         case 10:
             // find max
             printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
             scanf("%d", &sllchoice);
-            printf("\nMAX: %d\n", findMax((sllchoice==1)?sll1:sll2));
+            printf("\nMAX: %d\n", findMax((sllchoice == 1) ? sll1 : sll2));
             break;
         case 11:
             // find min
             printf("Select SLL to find middle element:\n\n1\tSLL1\n2\tSLL2\n");
             scanf("%d", &sllchoice);
-            printf("\nMIN: %d\n", findMin((sllchoice==1)?sll1:sll2));
+            printf("\nMIN: %d\n", findMin((sllchoice == 1) ? sll1 : sll2));
             break;
         case 12:
             // sort
@@ -574,8 +715,10 @@ void main() {
             sortType order;
             int orderChoice;
             scanf("%d", &orderChoice);
-            if(orderChoice) order = desc;
-            else order = asc;
+            if (orderChoice)
+                order = desc;
+            else
+                order = asc;
             switch (sllchoice)
             {
             case 1:
@@ -589,7 +732,8 @@ void main() {
             }
             printf("\nSorted...\n");
             break;
-        default: return;
+        default:
+            return;
             break;
         }
     }
