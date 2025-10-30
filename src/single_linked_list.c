@@ -358,26 +358,28 @@ void swapNodes(NODE **n1, NODE **n2)
 
 NODE *sortSLL(NODE *sll, sortType order)
 {
+    NODE *curr;
     int n = getLength(sll);
     bool swapped;
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 1; i <= n; i++)
     {
+        curr = sll;
         swapped = false;
-        for (int j = 0; j < n - i - 1; j++)
+        for (int j = 1; j <= n - i; j++, curr=curr->next)
         {
             switch (order)
             {
             case asc:
-                if (sll->val > sll->next->val)
+                if (curr->val > curr->next->val)
                 {
-                    swapNodes(&sll, &(sll->next));
+                    swapNodes(&curr, &(curr->next));
                     swapped = true;
                 }
                 break;
             case desc:
-                if (sll->val < sll->next->val)
+                if (curr->val < curr->next->val)
                 {
-                    swapNodes(&sll, &(sll->next));
+                    swapNodes(&curr, &(curr->next));
                     swapped = true;
                 }
             default:
