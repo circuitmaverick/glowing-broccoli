@@ -29,9 +29,18 @@ NODE* createDLL(NODE *prev) {
     return new;
 }
 
+// delete a dll function (recursive)
+NODE *deleteDLL(NODE* dll) {
+    if(!dll) { printf("\nDLL doesn't exist\n"); }
+    if(dll->next) return deleteDLL(dll->next);
+    free(dll);
+    return NULL;
+}
+
 // traverse dll function (recursive);
 void traverseDLL(NODE *dll) {
-    printf("%d ", dll->val);
+    if(!dll) { printf("\nDLL doesn't exist\n"); return; }
+    printf(" %d ", dll->val);
     if(dll->next) { printf("->"); traverseDLL(dll->next); }
     else printf("\n");
 }
@@ -76,9 +85,25 @@ void main() {
                 printf("\nInvalid DLL\n");
                 break;
             }
+            printf("\nCreated DLL\n");
             break;
         case 2:
             // delete a double linked list
+            printf("Select DLL:\n\n1\tDLL1\n2\tDLL2\n>\t");
+            scanf("%d", &dllchoice);
+            switch (dllchoice)
+            {
+            case 1:
+                dll1 = deleteDLL(dll1);
+                break;
+            case 2:
+                dll2 = deleteDLL(dll2);
+                break;
+            default:
+                printf("\nInvalid DLL\n");
+                break;
+            }
+            printf("\nDeleted DLL\n");
             break;
         case 3:
             // traverse a double linked list
