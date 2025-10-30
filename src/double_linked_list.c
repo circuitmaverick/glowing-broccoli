@@ -45,6 +45,12 @@ void traverseDLL(NODE *dll) {
     else printf("\n");
 }
 
+// count nodes in dll function (recursive)
+int countNodes(NODE *dll) {
+    if(!dll) return 0;
+    return 1+countNodes(dll->next);
+}
+
 void main() {
     NODE *dll1, *dll2;
     while (1)
@@ -124,6 +130,20 @@ void main() {
             break;
         case 4:
             // count nodes of a double linked list
+            printf("Select DLL:\n\n1\tDLL1\n2\tDLL2\n>\t");
+            scanf("%d", &dllchoice);
+            switch (dllchoice)
+            {
+            case 1:
+                printf("\nNo. of nodes in DLL1: %d\n", countNodes(dll1));
+                break;
+            case 2:
+                printf("\nNo. of nodes in DLL2: %d\n", countNodes(dll2));
+                break;
+            default:
+                printf("\nInvalid DLL\n");
+                break;
+            }
             break;
         case 5:
             // insert element in a double linked list
