@@ -297,12 +297,17 @@ void appendSLL(NODE **sll1, NODE **sll2)
 
 int findMid(NODE *sll)
 {
-    if (sll->next == NULL)
+    if(!sll) {
+        printf("\nEmpty SLL\n");
+        return 0;
+    }
+    if (!sll->next)
         return sll->val;
     NODE *curr = sll, *jumper = sll;
-    while (jumper->next != NULL || jumper != NULL)
+    while(jumper)
     {
-        jumper = jumper->next->next;
+        if(jumper->next) jumper = jumper->next->next;
+        else jumper = NULL;
         if (jumper)
             curr = curr->next;
     }
