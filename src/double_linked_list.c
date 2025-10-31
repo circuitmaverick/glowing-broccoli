@@ -1,10 +1,15 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdbool.h>
 
 typedef struct node {
     struct node *prev, *next;
     int val;
 } NODE;
+
+typedef enum sortdirection {
+    asc, desc
+} SORTORDER;
 
 // create dll function (recursive)
 NODE* createDLL(NODE *prev) {
@@ -137,8 +142,14 @@ int deleteFromBeginning(NODE **dll) {
 int deleteFromEnd(NODE **dll) {
     if(!*dll) { printf("\nEmpty DLL\n"); return 0; }
     NODE *curr = *dll; int val;
-    // if(!(*dll)->next) {} fix this function
+    if(!curr->next) {
+        val = curr->val;
+        free(curr);
+        *dll = NULL;
+        return val;
+    }
     while(curr->next) curr = curr->next;
+    curr->prev->next = NULL;
     val = curr->val;
     free(curr);
     return val;
@@ -177,6 +188,7 @@ int deleteEle(NODE *dll, int key) {
     return val;
 }
 
+// reverse dll
 void reverseDLL(NODE **dll) {
     if(!*dll) { printf("\nEmpty DLL\n"); return; }
     if(!(*dll)->next) return;
@@ -191,7 +203,93 @@ void reverseDLL(NODE **dll) {
     *dll = prev;
 }
 
+// append two dll and store in the former dll
+void appendDLL(NODE **dll1, NODE **dll2) {
+    if(!*dll1 || !*dll2) {
+        printf("\nEnter two valid DLLs.\n"); return;
+    }
+    NODE *curr = *dll1;
+    while(curr->next) curr = curr->next;
+    curr->next = *dll2;
+    (*dll2)->prev = curr;
+    *dll2 = NULL;
+}
 
+// find mid element without counting
+int findMid(NODE *dll) {
+    if(!dll) {
+        printf("\nEmpty DLL\n"); return 0;
+    }
+    if(!dll->next) return dll->val;
+    NODE *jumper = dll;
+    while(jumper) {
+        jumper->next?(jumper = jumper->next->next): (jumper = jumper->next);
+        dll = dll->next;
+    }
+    return dll->prev->val;
+}
+
+// find max element
+int findMax(NODE *dll) {
+    if(!dll) {
+        printf("\nEmpty DLL\n"); return 0;
+    }
+    int max = dll->val;
+    while(dll) {
+        dll->val > max ? (max = dll->val): max;
+        dll = dll->next;
+    }
+    return max;
+}
+
+// find min element
+int findMin(NODE *dll) {
+    if(!dll) {
+        printf("\nEmpty DLL\n"); return 0;
+    }
+    int min = dll->val;
+    while(dll) {
+        dll->val < min ? (min = dll->val): min;
+        dll = dll->next;
+    }
+    return min;
+}
+
+// swap two nodes in a dll
+void swapNodes(NODE **node1, NODE **node2) {
+    int temp = (*node1)->val;
+    (*node1)->val = (*node2)->val;
+    (*node2)->val = temp;
+}
+
+void sortDLL(NODE *dll, SORTORDER order) {
+    if(!dll) { printf("\nEmpty DLL\n"); return; }
+    if(!(dll)->next) return;
+    NODE *curr; int length = countNodes(dll);
+    for(int i=0; i<length - 1; i++) {
+        curr = dll;
+        bool swapped = false;
+        for(int j=0; j<length-i-1; j++, curr=curr->next) {
+            switch (order)
+            {
+            case asc:
+                if(curr->val > curr->next->val) {
+                    swapNodes(&curr, &curr->next);
+                    swapped = true;
+                }
+                break;
+            case desc:
+                if(curr->val < curr->next->val) {
+                    swapNodes(&curr, &curr->next);
+                    swapped = true;
+                }
+            default:
+                break;
+            }
+        }
+        if(!swapped) break;
+    }
+}
 
 void main() {
     NODE *dll1 = NULL, *dll2 = NULL;
@@ -389,19 +487,44 @@ void main() {
             break;
         case 8:
             // append two double linked lists into the former one
-
+            printf("Select DLL:\n\n1\tDLL1<->DLL2\n2\tDLL2<->DLL1\n>\t");
+            scanf("%d", &dllchoice);
+            if(dllchoice == 1) appendDLL(&dll1, &dll2);
+            else if(dllchoice == 2) appendDLL(&dll2, &dll2);
             break;
         case 9:
             // find middle element in a double linked list without counting
+            printf("Select DLL:\n\n1\tDLL1\n2\tDLL2\n>\t");
+            scanf("%d", &dllchoice);
+            if(dllchoice==1) printf("\nMid of DLL1: %d\n", findMid(dll1));
+            else if(dllchoice==2) printf("\nMid of DLL2: %d\n", findMid(dll2));
+            else printf("\nInvalid DLL\n");
             break;
         case 10:
             // find max element from a double linked list
+            printf("Select DLL:\n\n1\tDLL1\n2\tDLL2\n>\t");
+            scanf("%d", &dllchoice);
+            if(dllchoice==1) printf("\nMax of DLL1: %d\n", findMax(dll1));
+            else if(dllchoice==2) printf("\nMax of DLL2: %d\n", findMax(dll2));
+            else printf("\nInvalid DLL\n");
             break;
         case 11:
             // find min element from a double linked list
+            printf("Select DLL:\n\n1\tDLL1\n2\tDLL2\n>\t");
+            scanf("%d", &dllchoice);
+            if(dllchoice==1) printf("\nMin of DLL1: %d\n", findMin(dll1));
+            else if(dllchoice==2) printf("\nMin of DLL2: %d\n", findMin(dll2));
+            else printf("\nInvalid DLL\n");
             break;
         case 12:
             // sort elements in a double linked list
+            printf("Select DLL:\n\n1\tDLL1\n2\tDLL2\n>\t");
+            scanf("%d", &dllchoice);
+            printf("Enter order:\n\n\t0\tASCENDING\n\t1\tDESCENDING\n");
+            SORTORDER order; scanf("%d", &order);
+            if(dllchoice==1) sortDLL(dll1, order);
+            else if(dllchoice==2) sortDLL(dll2, order);
+            else printf("\nInvalid DLL\n");
             break;
         default: return;
             break;
