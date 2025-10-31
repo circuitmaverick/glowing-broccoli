@@ -41,7 +41,7 @@ NODE *deleteDLL(NODE* dll) {
 void traverseDLL(NODE *dll) {
     if(!dll) { printf("\nDLL doesn't exist\n"); return; }
     printf(" %d ", dll->val);
-    if(dll->next) { printf("->"); traverseDLL(dll->next); }
+    if(dll->next) { printf("<->"); traverseDLL(dll->next); }
     else printf("\n");
 }
 
@@ -132,6 +132,66 @@ int deleteFromBeginning(NODE **dll) {
     free(curr);
     return val;
 }
+
+// delete from end      FIXING REQUIRED
+int deleteFromEnd(NODE **dll) {
+    if(!*dll) { printf("\nEmpty DLL\n"); return 0; }
+    NODE *curr = *dll; int val;
+    // if(!(*dll)->next) {} fix this function
+    while(curr->next) curr = curr->next;
+    val = curr->val;
+    free(curr);
+    return val;
+}
+
+// delete from position
+int deleteFromPos(NODE **dll, int pos) {
+    if(!*dll) { printf("\nEmpty DLL\n"); return 0; }
+    NODE *curr = *dll; int val, i=1;
+    if(pos == 1) return deleteFromBeginning(dll);
+    while(curr->next) {
+        if(pos==i) break;
+        curr=curr->next; i++;
+    }
+    if(pos==i+1) return deleteFromEnd(dll);
+    else if(pos!=i) { printf("\nPosition out of bounds\n"); return 0; }
+    val = curr->val;
+    curr->prev->next = curr->next;
+    if(curr->next) curr->next->prev = curr->prev;
+    free(curr);
+    return val;
+}
+
+// delete an element
+int deleteEle(NODE *dll, int key) {
+    if(!dll) { printf("\nEmpty DLL\n"); return 0; }
+    while(dll) {
+        if(dll->val == key) break;
+        dll = dll->next;
+    }
+    if(!dll || !dll->next) { printf("\nElement not found\n"); return 0; }
+    dll->next->prev = dll->prev;
+    dll->prev->next = dll->next;
+    int val = dll->val;
+    free(dll->next);
+    return val;
+}
+
+void reverseDLL(NODE **dll) {
+    if(!*dll) { printf("\nEmpty DLL\n"); return; }
+    if(!(*dll)->next) return;
+    NODE *curr = *dll, *prev = NULL, *next=NULL;
+    while(curr) {
+        next = curr->next;
+        curr->prev = next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    *dll = prev;
+}
+
+
 
 void main() {
     NODE *dll1 = NULL, *dll2 = NULL;
@@ -275,7 +335,7 @@ void main() {
             printf("Select DLL:\n\n1\tDLL1\n2\tDLL2\n>\t");
             scanf("%d", &dllchoice);
             int deletechoice;
-            printf("Select where to delete:\n\n\t1\tbeginning\n\t2\tend\n\t3\ti-th position\n\t4\tafter an element\n\n>\t");
+            printf("Select where to delete:\n\n\t1\tbeginning\n\t2\tend\n\t3\ti-th position\n\t4\element\n\n>\t");
             scanf("%d", &deletechoice);
             switch (deletechoice)
             {
@@ -287,12 +347,23 @@ void main() {
                 break;
             case 2:
                 // delete from end
+                if(dllchoice == 1) printf("\nDeleted from DLL1: %d\n", deleteFromEnd(&dll1));
+                else if(dllchoice == 2) printf("\nDeleted from DLL2: %d\n", deleteFromEnd(&dll2));
+                else printf("\nInvalid DLL\n");
                 break;
             case 3:
                 // delete from i-th position
+                printf("\nEnter position: "); scanf("%d", &key);
+                if(dllchoice == 1) printf("\nDeleted from DLL1: %d\n", deleteFromPos(&dll1, key));
+                else if(dllchoice == 2) printf("\nDeleted from DLL2: %d\n", deleteFromPos(&dll2, key));
+                else printf("\nInvalid DLL\n");
                 break;
             case 4:
                 // delete after an element
+                printf("\nEnter element: "); scanf("%d", &key);
+                if(dllchoice == 1) printf("\nDeleted from DLL1: %d\n", deleteEle(dll1, key));
+                else if(dllchoice == 2) printf("\nDeleted from DLL2: %d\n", deleteEle(dll2, key));
+                else printf("\nInvalid DLL\n");
                 break;
             default:
                 printf("\nInvalid choice\n");
@@ -301,9 +372,24 @@ void main() {
             break;
         case 7:
             // reverse a double linked list
+            printf("Select DLL:\n\n1\tDLL1\n2\tDLL2\n>\t");
+            scanf("%d", &dllchoice);
+            switch (dllchoice)
+            {
+            case 1:
+                reverseDLL(&dll1); printf("\nReversed DLL\n");
+                break;
+            case 2:
+                reverseDLL(&dll2); printf("\nReversed DLL\n");
+                break;
+            default:
+                printf("\nInvalid DLL\n");
+                break;
+            }
             break;
         case 8:
             // append two double linked lists into the former one
+
             break;
         case 9:
             // find middle element in a double linked list without counting
